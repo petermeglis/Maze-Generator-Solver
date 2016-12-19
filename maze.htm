@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"><title>https://fiddle.jshell.net/s2avatar/wskheqax/show/light/</title><link rel="stylesheet" type="text/css" href="maze_files/viewsource.css"></head><body id="viewsource" class="highlight" style="-moz-tab-size: 4" contextmenu="actions"><pre id="line1"><span></span><span class="doctype">&lt;!DOCTYPE html&gt;</span><span>
+<span id="line2"></span></span><span>&lt;<span class="start-tag">html</span>&gt;</span><span>
+<span id="line3"></span></span><span>&lt;<span class="start-tag">head</span>&gt;</span><span>
+<span id="line4"></span>  </span><span>&lt;<span class="start-tag">meta</span> <span class="attribute-name">http-equiv</span>="<a class="attribute-value">content-type</a>" <span class="attribute-name">content</span>="<a class="attribute-value">text/html; charset=UTF-8</a>"&gt;</span><span>
+<span id="line5"></span>  </span><span>&lt;<span class="start-tag">meta</span> <span class="attribute-name">name</span>="<a class="attribute-value">robots</a>" <span class="attribute-name">content</span>="<a class="attribute-value">noindex, nofollow</a>"&gt;</span><span>
+<span id="line6"></span>  </span><span>&lt;<span class="start-tag">meta</span> <span class="attribute-name">name</span>="<a class="attribute-value">googlebot</a>" <span class="attribute-name">content</span>="<a class="attribute-value">noindex, nofollow</a>"&gt;</span><span>
+<span id="line7"></span>
+<span id="line8"></span>  
+<span id="line9"></span>  
+<span id="line10"></span>
+<span id="line11"></span>  
+<span id="line12"></span>  
+<span id="line13"></span>  
+<span id="line14"></span>
+<span id="line15"></span>  
+<span id="line16"></span>
+<span id="line17"></span>  </span><span>&lt;<span class="start-tag">script</span> <span class="attribute-name">type</span>="<a class="attribute-value">text/javascript</a>" <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:https://cdnjs.cloudflare.com/ajax/libs/processing.js/1.4.7/processing.min.js">//cdnjs.cloudflare.com/ajax/libs/processing.js/1.4.7/processing.min.js</a>"&gt;</span><span></span><span>&lt;/<span class="end-tag">script</span>&gt;</span><span>
+<span id="line18"></span>
+<span id="line19"></span>  
+<span id="line20"></span>
+<span id="line21"></span>  
+<span id="line22"></span>
+<span id="line23"></span>  
+<span id="line24"></span>
+<span id="line25"></span>  
+<span id="line26"></span>    </span><span>&lt;<span class="start-tag">link</span> <span class="attribute-name">rel</span>="<a class="attribute-value">stylesheet</a>" <span class="attribute-name">type</span>="<a class="attribute-value">text/css</a>" <span class="attribute-name">href</span>="<a class="attribute-value" href="view-source:https://fiddle.jshell.net/css/result-light.css">/css/result-light.css</a>"&gt;</span><span>
+<span id="line27"></span>  
+<span id="line28"></span>
+<span id="line29"></span>  
+<span id="line30"></span>
+<span id="line31"></span>  </span><span>&lt;<span class="start-tag">style</span> <span class="attribute-name">type</span>="<a class="attribute-value">text/css</a>"&gt;</span><span>
+<span id="line32"></span>    
+<span id="line33"></span>  </span><span>&lt;/<span class="end-tag">style</span>&gt;</span><span>
+<span id="line34"></span>
+<span id="line35"></span>  </span><span>&lt;<span class="start-tag">title</span>&gt;</span><span> by s2avatar</span><span>&lt;/<span class="end-tag">title</span>&gt;</span><span>
+<span id="line36"></span>
+<span id="line37"></span>  
+<span id="line38"></span></span><span>&lt;/<span class="end-tag">head</span>&gt;</span><span>
+<span id="line39"></span>
+<span id="line40"></span></span><span>&lt;<span class="start-tag">body</span>&gt;</span><span>
+<span id="line41"></span>  </span><span>&lt;<span class="start-tag">h1</span> <span class="attribute-name">id</span>="<a class="attribute-value">title</a>"&gt;</span><span>Maze Generator and Solver</span><span>&lt;/<span class="end-tag">h1</span>&gt;</span><span>
+<span id="line42"></span></span><span>&lt;<span class="start-tag">canvas</span> <span class="attribute-name">id</span>="<a class="attribute-value">myCanvas</a>" <span class="attribute-name">width</span>="<a class="attribute-value">500</a>" <span class="attribute-name">height</span>="<a class="attribute-value">500</a>" <span class="attribute-name">style</span>="<a class="attribute-value">background-color=#FF00FF</a>"&gt;</span><span></span><span>&lt;/<span class="end-tag">canvas</span>&gt;</span><span>
+<span id="line43"></span></span><span>&lt;<span class="start-tag">button</span> <span class="attribute-name">type</span>="<a class="attribute-value">button</a>" <span class="attribute-name">onclick</span>="<a class="attribute-value">startSolver()</a>"&gt;</span><span>
+<span id="line44"></span>Solve
+<span id="line45"></span></span><span>&lt;/<span class="end-tag">button</span>&gt;</span><span>
+<span id="line46"></span>  
+<span id="line47"></span>
+<span id="line48"></span>
+<span id="line49"></span>
+<span id="line50"></span>
+<span id="line51"></span></span><span>&lt;<span class="start-tag">script</span> <span class="attribute-name">type</span>='<a class="attribute-value">text/javascript</a>'&gt;</span><span>//</span><span>&lt;!</span><span>[CDATA[
+<span id="line52"></span>
+<span id="line53"></span>var canvas = document.getElementById("myCanvas");
+<span id="line54"></span>var context = canvas.getContext("2d")
+<span id="line55"></span>context.moveTo(0,0);
+<span id="line56"></span>
+<span id="line57"></span>
+<span id="line58"></span>var cells = [];
+<span id="line59"></span>var size = 100;
+<span id="line60"></span>var scale = canvas.width / size;
+<span id="line61"></span>
+<span id="line62"></span>//context.strokeStyle = 'rgba(0,0,0,0.5)';
+<span id="line63"></span>//for(i = 0; i </span><span>&lt;=</span><span> canvas.width; i += scale) {
+<span id="line64"></span>//  context.moveTo(i, 0);
+<span id="line65"></span>//  context.lineTo(i, canvas.height);
+<span id="line66"></span>//}
+<span id="line67"></span>//for(j = 0; j </span><span>&lt;=</span><span> canvas.height; j += scale) {
+<span id="line68"></span>//  context.moveTo(0, j);
+<span id="line69"></span>//  context.lineTo(canvas.width, j);
+<span id="line70"></span>//}
+<span id="line71"></span>
+<span id="line72"></span>for(i = 0; i </span><span>&lt; </span><span>size; i++) {
+<span id="line73"></span>  for(j = 0; j </span><span>&lt; </span><span>size; j++) {
+<span id="line74"></span>    cells.push(new Cell(j*scale,i*scale,scale));
+<span id="line75"></span>  }
+<span id="line76"></span>}
+<span id="line77"></span>for(i = 0; i </span><span>&lt; </span><span>cells.length; i++) {
+<span id="line78"></span>  cells[i].setNeighbors(getNeighbors(i));
+<span id="line79"></span>}
+<span id="line80"></span>//for(i = 0; i </span><span>&lt; </span><span>cells.length; i++) {
+<span id="line81"></span>//  cells[i].draw();
+<span id="line82"></span>//}
+<span id="line83"></span>context.stroke();
+<span id="line84"></span>
+<span id="line85"></span>
+<span id="line86"></span>
+<span id="line87"></span>function getNeighbors(i) {
+<span id="line88"></span>	var top = i - size;
+<span id="line89"></span>  var right = i + 1;
+<span id="line90"></span>  var bottom = i + size;
+<span id="line91"></span>  var left = i - 1;
+<span id="line92"></span>  
+<span id="line93"></span>  if (top </span><span>&lt; </span><span>0) top = null;
+<span id="line94"></span>  else top = cells[top];
+<span id="line95"></span>  if (i % size == 0) left = null;
+<span id="line96"></span>  else left = cells[left];
+<span id="line97"></span>  if (bottom &gt; size*size) bottom = null;
+<span id="line98"></span>  else bottom = cells[bottom];
+<span id="line99"></span>  if ((i + 1) % size == 0) right = null;
+<span id="line100"></span>  else right = cells[right];
+<span id="line101"></span>
+<span id="line102"></span>  return [top, right, bottom, left];
+<span id="line103"></span>}
+<span id="line104"></span>
+<span id="line105"></span>function Cell(x, y, size) {
+<span id="line106"></span>	this.x = x;
+<span id="line107"></span>  this.y = y;
+<span id="line108"></span>  this.size = size;
+<span id="line109"></span>  this.neighbors = [null, null, null, null];
+<span id="line110"></span>  this.walls = [false, false, false, false];
+<span id="line111"></span>  this.used = false;
+<span id="line112"></span>  
+<span id="line113"></span>  
+<span id="line114"></span>  this.setNeighbors = function(neighbors) {
+<span id="line115"></span>  	this.neighbors = neighbors;
+<span id="line116"></span>  }
+<span id="line117"></span>  
+<span id="line118"></span>  this.getNeighbor = function(direction) {
+<span id="line119"></span>  	return this.neighbors[direction]
+<span id="line120"></span>  }
+<span id="line121"></span>  
+<span id="line122"></span>  this.draw = function() {
+<span id="line123"></span>  	context.moveTo(this.x, this.y);
+<span id="line124"></span>    if(!this.walls[0]) context.lineTo(this.x + this.size, this.y);
+<span id="line125"></span>    else context.moveTo(this.x + this.size, this.y);
+<span id="line126"></span>    if(!this.walls[1]) context.lineTo(this.x + this.size, this.y + this.size);
+<span id="line127"></span>    else context.moveTo(this.x + this.size, this.y + this.size);
+<span id="line128"></span>    if(!this.walls[2]) context.lineTo(this.x, this.y + this.size);
+<span id="line129"></span>    else context.moveTo(this.x, this.y + this.size);
+<span id="line130"></span>    if(!this.walls[3]) context.lineTo(this.x, this.y);
+<span id="line131"></span>  }
+<span id="line132"></span>  
+<span id="line133"></span>  
+<span id="line134"></span>  this.canMove = function() {
+<span id="line135"></span>  	for(i = 0; i </span><span>&lt; </span><span>this.neighbors.length; i++){
+<span id="line136"></span>    	if(this.neighbors[i] != null &amp;&amp; !this.neighbors[i].used) {
+<span id="line137"></span>      	return true;
+<span id="line138"></span>      }
+<span id="line139"></span>    }
+<span id="line140"></span>    return false;
+<span id="line141"></span>  }
+<span id="line142"></span>  
+<span id="line143"></span>}
+<span id="line144"></span>
+<span id="line145"></span>// GENERATOR
+<span id="line146"></span>
+<span id="line147"></span>var stack = []
+<span id="line148"></span>
+<span id="line149"></span>function startGenerator() {
+<span id="line150"></span>	stack.push(cells[0]);
+<span id="line151"></span>	move(cells[0]);
+<span id="line152"></span>}
+<span id="line153"></span>
+<span id="line154"></span>function move(cell) {
+<span id="line155"></span>	cell.used = true;
+<span id="line156"></span>  if(cell.getNeighbor(1) == null &amp;&amp; cell.getNeighbor(2) == null){
+<span id="line157"></span>    console.log("generator finished");
+<span id="line158"></span>    return;
+<span id="line159"></span>  }
+<span id="line160"></span>	while(true) {
+<span id="line161"></span>  	var canMove = cell.canMove();
+<span id="line162"></span>    if(canMove) {
+<span id="line163"></span>    	var next = pickNext(cell);
+<span id="line164"></span>      stack.push(next);
+<span id="line165"></span>      move(next);
+<span id="line166"></span>    } else {
+<span id="line167"></span>    	stack.pop();
+<span id="line168"></span>      return;
+<span id="line169"></span>    }
+<span id="line170"></span>  }
+<span id="line171"></span>}
+<span id="line172"></span>
+<span id="line173"></span>function pickNext(cell) {
+<span id="line174"></span>	var direction;
+<span id="line175"></span>  while(true) {
+<span id="line176"></span>  	direction = Math.floor(Math.random() * 4);
+<span id="line177"></span>    if(cell.getNeighbor(direction) != null &amp;&amp; !cell.getNeighbor(direction).used) {
+<span id="line178"></span>    	break;
+<span id="line179"></span>    }
+<span id="line180"></span>  }
+<span id="line181"></span>  
+<span id="line182"></span>  var nextCell = cell.getNeighbor(direction);
+<span id="line183"></span>  cell.walls[direction] = true;
+<span id="line184"></span>  nextCell.walls[(direction + 2) % 4] = true;
+<span id="line185"></span>  return nextCell;
+<span id="line186"></span>}
+<span id="line187"></span>
+<span id="line188"></span>// SOLVER
+<span id="line189"></span>function startSolver() {
+<span id="line190"></span>	stack = []
+<span id="line191"></span>  stack.push(cells[0])
+<span id="line192"></span>  moveS(cells[0], -10)
+<span id="line193"></span>  context.fillStyle="#FF0000";
+<span id="line194"></span>	var lineWidth = context.lineWidth;
+<span id="line195"></span>	for(i = 0; i </span><span>&lt; </span><span>stack.length; i++) {
+<span id="line196"></span>		var x = stack[i].x
+<span id="line197"></span>  	var y = stack[i].y
+<span id="line198"></span>  	context.fillRect(x + lineWidth, y + lineWidth, scale - lineWidth*2, scale - 	lineWidth*2)
+<span id="line199"></span>	}
+<span id="line200"></span>}
+<span id="line201"></span>
+<span id="line202"></span>function moveS(cell, previousDir) {
+<span id="line203"></span>  if(cell.getNeighbor(1) == null &amp;&amp; cell.getNeighbor(2) == null){
+<span id="line204"></span>    console.log("solver finished");
+<span id="line205"></span>    return true;
+<span id="line206"></span>  }
+<span id="line207"></span>  
+<span id="line208"></span>  var nextDirs = [];
+<span id="line209"></span>	for(i = 0; i </span><span>&lt; </span><span>4; i++) {
+<span id="line210"></span>  	if((previousDir + 2) % 4 != i &amp;&amp; cell.walls[i]) {
+<span id="line211"></span>    	nextDirs.push(i);
+<span id="line212"></span>    }
+<span id="line213"></span>  }
+<span id="line214"></span>  
+<span id="line215"></span>  for(let val of nextDirs) {
+<span id="line216"></span>  	
+<span id="line217"></span>  	if(moveS(cell.getNeighbor(val), val)) {
+<span id="line218"></span>    	stack.push(cell.getNeighbor(val));
+<span id="line219"></span>    	return true;
+<span id="line220"></span>    }
+<span id="line221"></span>  }
+<span id="line222"></span>  return false;
+<span id="line223"></span>}
+<span id="line224"></span>
+<span id="line225"></span>// TESTING
+<span id="line226"></span>
+<span id="line227"></span>console.log("starting")
+<span id="line228"></span>startGenerator();
+<span id="line229"></span>//context.clearRect(0,0,canvas.width,canvas.height)
+<span id="line230"></span>for(i = 0; i </span><span>&lt; </span><span>cells.length; i++) {
+<span id="line231"></span>  cells[i].draw();
+<span id="line232"></span>}
+<span id="line233"></span>context.stroke();
+<span id="line234"></span>
+<span id="line235"></span>
+<span id="line236"></span>//var lineWidth = context.lineWidth
+<span id="line237"></span>//context.fillStyle="#FF0000";
+<span id="line238"></span>//context.fillRect(scale*2 + lineWidth, scale*2 + lineWidth, scale - lineWidth*2, scale - lineWidth*2);
+<span id="line239"></span>//setTimeout(function(){
+<span id="line240"></span>//    context.fillRect(scale*3 + lineWidth, scale*2 + lineWidth, scale - lineWidth*2, scale - lineWidth*2);
+<span id="line241"></span>//}, 2000);
+<span id="line242"></span>
+<span id="line243"></span>
+<span id="line244"></span>
+<span id="line245"></span>//]]&gt; 
+<span id="line246"></span>
+<span id="line247"></span></span><span>&lt;/<span class="end-tag">script</span>&gt;</span><span>
+<span id="line248"></span>
+<span id="line249"></span>  </span><span>&lt;<span class="start-tag">script</span>&gt;</span><span>
+<span id="line250"></span>  // tell the embed parent frame the height of the content
+<span id="line251"></span>  if (window.parent &amp;&amp; window.parent.parent){
+<span id="line252"></span>    window.parent.parent.postMessage(["resultsFrame", {
+<span id="line253"></span>      height: document.body.getBoundingClientRect().height,
+<span id="line254"></span>      slug: "wskheqax"
+<span id="line255"></span>    }], "*")
+<span id="line256"></span>  }
+<span id="line257"></span></span><span>&lt;/<span class="end-tag">script</span>&gt;</span><span>
+<span id="line258"></span>
+<span id="line259"></span></span><span>&lt;/<span class="end-tag">body</span>&gt;</span><span>
+<span id="line260"></span>
+<span id="line261"></span></span><span>&lt;/<span class="end-tag">html</span>&gt;</span><span>
+<span id="line262"></span>
+<span id="line263"></span></span></pre><menu type="context" id="actions"><menuitem id="goToLine" label="Go to Line…" accesskey="L"></menuitem><menuitem id="wrapLongLines" label="Wrap Long Lines" type="checkbox"></menuitem><menuitem id="highlightSyntax" label="Syntax Highlighting" type="checkbox" checked="true"></menuitem></menu></body></html>
