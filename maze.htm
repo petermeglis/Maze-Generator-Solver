@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html><head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+
+  
+  
+
+  
+  
+  
+
+  
+
+  <script type="text/javascript" src="maze_files/processing.js"></script>
+
+  
+
+  
+
+  
+
+  
+    <link rel="stylesheet" type="text/css" href="maze_files/result-light.css">
+  
+
+  
+
+  <style type="text/css">
+    
+  </style>
+
+  <title> by s2avatar</title>
+
+  
+</head>
+
+<body>
+  <h1 id="title">Maze Generator and Solver</h1>
+<canvas id="myCanvas" width="500" height="500" style="background-color=#FF00FF"></canvas>
+<button type="button" onclick="startSolver()">
+Solve
+</button>
+<button type="button" onclick="reset()">
+Reset
+</button>
+  
+
+
+
+
+<script type="text/javascript">//<![CDATA[
+
+var canvas = document.getElementById("myCanvas");
+var context = canvas.getContext("2d")
+context.moveTo(0,0);
+
+
+var cells = [];
+var size = 20;
+var scale = canvas.width / size;
+
+//context.strokeStyle = 'rgba(0,0,0,0.5)';
+//for(i = 0; i <= canvas.width; i += scale) {
+//  context.moveTo(i, 0);
+//  context.lineTo(i, canvas.height);
+//}
+//for(j = 0; j <= canvas.height; j += scale) {
+//  context.moveTo(0, j);
+//  context.lineTo(canvas.width, j);
+//}
+
+for(i = 0; i < size; i++) {
+  for(j = 0; j < size; j++) {
+    cells.push(new Cell(j*scale,i*scale,scale));
+  }
+}
+for(i = 0; i < cells.length; i++) {
+  cells[i].setNeighbors(getNeighbors(i));
+}
+//for(i = 0; i < cells.length; i++) {
+//  cells[i].draw();
+//}
+context.stroke();
+
+
+
+function getNeighbors(i) {
+	var top = i - size;
+  var right = i + 1;
+  var bottom = i + size;
+  var left = i - 1;
+  
+  if (top < 0) top = null;
+  else top = cells[top];
+  if (i % size == 0) left = null;
+  else left = cells[left];
+  if (bottom > size*size) bottom = null;
+  else bottom = cells[bottom];
+  if ((i + 1) % size == 0) right = null;
+  else right = cells[right];
+
+  return [top, right, bottom, left];
+}
+
+function Cell(x, y, size) {
+	this.x = x;
+  this.y = y;
+  this.size = size;
+  this.neighbors = [null, null, null, null];
+  this.walls = [false, false, false, false];
+  this.used = false;
+  
+  
+  this.setNeighbors = function(neighbors) {
+  	this.neighbors = neighbors;
+  }
+  
+  this.getNeighbor = function(direction) {
+  	return this.neighbors[direction]
+  }
+  
+  this.draw = function() {
+  	context.moveTo(this.x, this.y);
+    if(!this.walls[0]) context.lineTo(this.x + this.size, this.y);
+    else context.moveTo(this.x + this.size, this.y);
+    if(!this.walls[1]) context.lineTo(this.x + this.size, this.y + this.size);
+    else context.moveTo(this.x + this.size, this.y + this.size);
+    if(!this.walls[2]) context.lineTo(this.x, this.y + this.size);
+    else context.moveTo(this.x, this.y + this.size);
+    if(!this.walls[3]) context.lineTo(this.x, this.y);
+  }
+  
+  
+  this.canMove = function() {
+  	for(i = 0; i < this.neighbors.length; i++){
+    	if(this.neighbors[i] != null && !this.neighbors[i].used) {
+      	return true;
+      }
+    }
+    return false;
+  }
+  
+}
+
+// GENERATOR
+
+var stack;
+
+function startGenerator() {
+	context.clearRect(0,0,canvas.width,canvas.height)
+  stack = []
+	stack.push(cells[0]);
+	move(cells[0]);
+}
+
+function move(cell) {
+	cell.used = true;
+  if(cell.getNeighbor(1) == null && cell.getNeighbor(2) == null){
+    console.log("generator finished");
+    return;
+  }
+	while(true) {
+  	var canMove = cell.canMove();
+    if(canMove) {
+    	var next = pickNext(cell);
+      stack.push(next);
+      move(next);
+    } else {
+    	stack.pop();
+      return;
+    }
+  }
+}
+
+function pickNext(cell) {
+	var direction;
+  while(true) {
+  	direction = Math.floor(Math.random() * 4);
+    if(cell.getNeighbor(direction) != null && !cell.getNeighbor(direction).used) {
+    	break;
+    }
+  }
+  
+  var nextCell = cell.getNeighbor(direction);
+  cell.walls[direction] = true;
+  nextCell.walls[(direction + 2) % 4] = true;
+  return nextCell;
+}
+
+// SOLVER
+function startSolver() {
+	stack = []
+  stack.push(cells[0])
+  moveS(cells[0], -10)
+  context.fillStyle="#FF0000";
+	var lineWidth = context.lineWidth;
+	for(i = 0; i < stack.length; i++) {
+		var x = stack[i].x
+  	var y = stack[i].y
+  	context.fillRect(x + scale/3, y + scale/3, scale/3, scale/3)
+	}
+}
+
+function moveS(cell, previousDir) {
+  if(cell.getNeighbor(1) == null && cell.getNeighbor(2) == null){
+    console.log("solver finished");
+    return true;
+  }
+  
+  var nextDirs = [];
+	for(i = 0; i < 4; i++) {
+  	if((previousDir + 2) % 4 != i && cell.walls[i]) {
+    	nextDirs.push(i);
+    }
+  }
+  
+  for(let val of nextDirs) {
+  	
+  	if(moveS(cell.getNeighbor(val), val)) {
+    	stack.push(cell.getNeighbor(val));
+    	return true;
+    }
+  }
+  return false;
+}
+
+// TESTING
+
+console.log("starting")
+startGenerator();
+//context.clearRect(0,0,canvas.width,canvas.height)
+for(i = 0; i < cells.length; i++) {
+  cells[i].draw();
+}
+context.stroke();
+
+function reset() {
+	startGenerator();
+  for(i = 0; i < cells.length; i++) {
+  	cells[i].draw();
+	}
+	context.stroke();
+}
+
+//var lineWidth = context.lineWidth
+//context.fillStyle="#FF0000";
+//context.fillRect(scale*2 + lineWidth, scale*2 + lineWidth, scale - lineWidth*2, scale - lineWidth*2);
+//setTimeout(function(){
+//    context.fillRect(scale*3 + lineWidth, scale*2 + lineWidth, scale - lineWidth*2, scale - lineWidth*2);
+//}, 2000);
+
+
+
+//]]> 
+
+</script>
+
+  <script>
+  // tell the embed parent frame the height of the content
+  if (window.parent && window.parent.parent){
+    window.parent.parent.postMessage(["resultsFrame", {
+      height: document.body.getBoundingClientRect().height,
+      slug: "zmh65a8h"
+    }], "*")
+  }
+</script>
+
+
+
+
+
+</body></html>
